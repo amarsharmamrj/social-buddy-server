@@ -31,8 +31,6 @@ import notificationRoute from './src/routes/notifications.js'
 
 dotenv.config();
 
-const port = process.env.PORT || 5000
-
 // configure socket
 // const io = new Server(7000, {
 //     cors: process.env.CLIENT_URL,
@@ -176,6 +174,7 @@ app.use("/api/notifications", notificationRoute)
 // })
 // messenger
 
+const port = process.env.PORT || 3000
 
 app.get("/home", (req, res) => {
     res.send("<h1>home api</h1>")
