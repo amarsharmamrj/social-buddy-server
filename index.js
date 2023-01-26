@@ -174,7 +174,7 @@ app.use("/api/notifications", notificationRoute)
 // })
 // messenger
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 5000
 
 app.get("/home", (req, res) => {
     res.send("<h1>home api</h1>")
