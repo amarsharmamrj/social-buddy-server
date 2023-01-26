@@ -8,7 +8,7 @@ import multer from 'multer'
 import path from 'path'
 import { fileURLToPath } from 'url';
 
-// import { Server } from "socket.io";
+import { Server } from "socket.io";
 // const io = new Server(7000, {
 //     cors: process.env.CLIENT_URL,
 // });
@@ -32,9 +32,9 @@ import notificationRoute from './src/routes/notifications.js'
 dotenv.config();
 
 // configure socket
-// const io = new Server(7000, {
-//     cors: process.env.CLIENT_URL,
-// });
+const io = new Server(7000, {
+    cors: process.env.CLIENT_URL,
+});
 
 // database connection
 Connection()
@@ -93,85 +93,85 @@ app.use("/api/notifications", notificationRoute)
 
 
 // messenger
-// let users = []
+let users = []
 
-// const addUser = (userId, socketId) => {
-//     !users.some((user) => user.userId === userId) &&
-//         users.push({ userId, socketId })
-// }
+const addUser = (userId, socketId) => {
+    !users.some((user) => user.userId === userId) &&
+        users.push({ userId, socketId })
+}
 
-// const removeUser = (socketId) => {
-//     users = users.filter((user) => user.socketId !== socketId)
-// }
+const removeUser = (socketId) => {
+    users = users.filter((user) => user.socketId !== socketId)
+}
 
-// const getUser = (userId) => {
-//     return users.find((user) => user.userId === userId)
-// }
+const getUser = (userId) => {
+    return users.find((user) => user.userId === userId)
+}
 
-// io.on("connection", (socket) => {
-//     console.log("a user connected")
-//     io.emit("welcome", "hello welcome to social buddy char application")
+io.on("connection", (socket) => {
+    console.log("a user connected")
+    io.emit("welcome", "hello welcome to social buddy char application")
 
-//     // on connect
-//     socket.on("addUser", (userId) => {
-//         addUser(userId, socket.id)
-//         io.emit("getUsers", users)
-//     })
+    // on connect
+    socket.on("addUser", (userId) => {
+        addUser(userId, socket.id)
+        io.emit("getUsers", users)
+    })
 
-//     // send and get message
-//     socket.on("sendMessageDeleted", ({ senderId, receiverId, messageId }) => {
-//         const user = getUser(receiverId)
-//         if (user) {
-//             io.to(user.socketId).emit("getMessageDeleted", {
-//                 senderId, messageId
-//             })
-//         }
-//     })
+    // send and get message
+    socket.on("sendMessageDeleted", ({ senderId, receiverId, messageId }) => {
+        const user = getUser(receiverId)
+        if (user) {
+            io.to(user.socketId).emit("getMessageDeleted", {
+                senderId, messageId
+            })
+        }
+    })
 
-//     // send and get message deleted
-//     socket.on("sendMessage", ({ senderId, receiverId, text, image }) => {
-//         const user = getUser(receiverId)
-//         if (user) {
-//             io.to(user.socketId).emit("getMessage", {
-//                 senderId, text, image
-//             })
-//         }
-//     })
+    // send and get message deleted
+    socket.on("sendMessage", ({ senderId, receiverId, text, image }) => {
+        const user = getUser(receiverId)
+        if (user) {
+            io.to(user.socketId).emit("getMessage", {
+                senderId, text, image
+            })
+        }
+    })
 
-//     // router connect
-//     socket.on("routerConnect", ({ data }) => {
-//         console.log("routerConnect:", data)
-//         // const user = getUser(receiverId)
-//         // if(user){
-//         //     io.to(user.socketId).emit("getMessage", {
-//         //         senderId, text, image
-//         //     })
-//         // }
-//     })
+    // router connect
+    socket.on("routerConnect", ({ data }) => {
+        console.log("routerConnect:", data)
+        // const user = getUser(receiverId)
+        // if(user){
+        //     io.to(user.socketId).emit("getMessage", {
+        //         senderId, text, image
+        //     })
+        // }
+    })
 
-//     // typing
-//     socket.on("typing", ({ receiverId, typing, conversationId }) => {
-//         const user = getUser(receiverId)
-//         if (user) {
-//             io.to(user.socketId).emit("typing", {
-//                 typing, receiverId, conversationId
-//             })
-//         }
-//     })
+    // typing
+    socket.on("typing", ({ receiverId, typing, conversationId }) => {
+        const user = getUser(receiverId)
+        if (user) {
+            io.to(user.socketId).emit("typing", {
+                typing, receiverId, conversationId
+            })
+        }
+    })
 
-//     // on disconnect
-//     socket.on("disconnect", () => {
-//         console.log("a user connected")
-//         removeUser(socket.id)
-//         io.emit("getUsers", users)
-//     })
+    // on disconnect
+    socket.on("disconnect", () => {
+        console.log("a user connected")
+        removeUser(socket.id)
+        io.emit("getUsers", users)
+    })
 
 
-//     // hi
-//     socket.on("hi", ({ username }) => {
-//         socket.broadcast.emit("hey", username)
-//     })
-// })
+    // hi
+    socket.on("hi", ({ username }) => {
+        socket.broadcast.emit("hey", username)
+    })
+})
 // messenger
 
 const PORT = process.env.port || 5000
