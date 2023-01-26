@@ -174,12 +174,12 @@ io.on("connection", (socket) => {
 })
 // messenger
 
-const PORT = process.env.port || 5000
+const port = process.env.PORT || 3000
 
 app.get("/home", (req, res) => {
     res.send("<h1>home api</h1>")
 })
 
-app.listen(PORT, () => {
-    console.log("App is running on the port:", PORT)
+app.listen(port, () => {
+    console.log("App is running on the port:", port)
 })
